@@ -7,7 +7,7 @@ from furl import furl
 url_page = 'http://www.expireddomains.net/backorder-expired-domains/'
 f = furl(url_page)
 query_counter = 0
-domain_size = 100
+domain_size = 250
 expired_domains = []
 
 # Iterate through the tbody table, looking for the "field_domain" value
@@ -37,8 +37,8 @@ def url_append(qc, ds):
     if not expired_domains:
         while True:
             f.add(args={'start': [qc]})
-            # prints out the urls we want to query so we can check they're correct
             expired_domain_parser(f)
+            # prints out the urls we want to query so we can check they're correct
             #print(f.url)
             del f.args['start']
             qc = qc + 25
@@ -51,5 +51,8 @@ def url_append(qc, ds):
 
 
 url_append(query_counter, domain_size)
-print(', '.join(expired_domains))
+# Save the scraped domains to a file called "expired_domains.txt"
+with open('expired_domains.txt', 'w') as filehandle:
+    filehandle.writelines("%s\n" % place for place in expired_domains)
+#print(', '.join(expired_domains))
 

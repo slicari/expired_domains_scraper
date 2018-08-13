@@ -2,12 +2,13 @@
 import urllib
 from bs4 import BeautifulSoup
 from furl import furl
+from tqdm import tqdm
 
 # define some variables
 url_page = 'http://www.expireddomains.net/backorder-expired-domains/'
 f = furl(url_page)
 query_counter = 0
-bla = 50
+bla = 25
 expired_domains = []
 
 # Iterate through the tbody table, looking for the "field_domain" value
@@ -51,26 +52,29 @@ final_num = (int(dms))
 def domain_scraper(qc, ds):
     if not expired_domains:
         while True:
-            f.add(args={'start': [qc]})
-            expired_domain_parser(f)
-            # prints out the urls we want to query so we can check they're correct
-            #print(f.url)
-            del f.args['start']
-            qc = qc + 25
-            # cuts off loop at "domain_size"...
-            # got by dividing total number of domains by 25 (# results displayed on page)
-            # to improve, need to parse and grab total number of domains, divide by 25, and
-            # set a "breaker" variable to that value that will be used to cut off the loop
-            if qc > ds:
-                break
+            try:
+                for i in tqdm(range(bla)):
+                    f.add(args={'start': [qc]})
+                    expired_domain_parser(f)
+                    # prints out the urls we want to query so we can check they're correct
+                    #print(f.url)
+                    del f.args['start']
+                    qc = qc + 25
+                    # cuts off loop at "domain_size"...
+                    # got by dividing total number of domains by 25 (# results displayed on page)
+                    # to improve, need to parse and grab total number of domains, divide by 25, and
+                    # set a "breaker" variable to that value that will be used to cut off the loop
+            except:
+                if qc > ds:
+                    break
+
 
 
 domain_scraper(query_counter, bla)
+
 # Save the scraped domains to a file called "expired_domains.txt"
 with open('expired_domains.txt', 'w') as filehandle:
     filehandle.writelines("%s\n" % place for place in expired_domains)
-
-#print(', '.join(expired_domains))
 
 #print(final_num)
 

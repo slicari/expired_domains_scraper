@@ -8,6 +8,7 @@ from furl import furl
 url_page = 'http://www.expireddomains.net/backorder-expired-domains/'
 f = furl(url_page)
 query_counter = 0
+# test variable for the query parameter of the URL
 bla = 50
 expired_domains = []
 
@@ -31,6 +32,8 @@ def expired_domain_parser(fu):
                 e.extract()
         expired_domains.append(domain)
 
+# Grabs the total number of expired domains for the current day
+
 
 def total_domain_count(fu):
     page = urllib.urlopen(fu.url)
@@ -39,15 +42,16 @@ def total_domain_count(fu):
     dv = dv.find('strong').text
     return dv.rstrip('\n\r')
 
-# Affixes the proper 'query' parameter to the url
-# Passes this url to expired_domain_parser
-# Repeats until 'domain_size' has been met
-
-
+# Parse the value from total_domain_count
+# and divide by 25 to give us the number of pages to scrape
 domain_size = total_domain_count(f)
 dms = domain_size.replace(",", "")
 final_num = (int(dms))
 all_the_doms = (int(final_num/25))
+
+# This function affixes the proper 'query' parameter to the url
+# Passes this url to expired_domain_parser
+# Repeats until 'domain_size' has been met
 
 
 def domain_scraper(qc, ds):
@@ -56,23 +60,15 @@ def domain_scraper(qc, ds):
             try:
                 f.add(args={'start': [qc]})
                 expired_domain_parser(f)
-                # prints out the urls we want to query so we can check they're correct
-                #print(f.url)
                 del f.args['start']
                 qc = qc + 25
-                # cuts off loop at "domain_size"...
-                # got by dividing total number of domains by 25 (# results displayed on page)
-                # to improve, need to parse and grab total number of domains, divide by 25, and
-                # set a "breaker" variable to that value that will be used to cut off the loop
             except:
                 if qc > ds:
-                    logging.info('IDK!')
                     break
 
 
 if __name__ == '__main__':
-#    print(all_the_doms)
-    domain_scraper(query_counter, all_the_doms)
+    domain_scraper(query_counter, bla)
 
     # Save the scraped domains to a file called "expired_domains.txt"
     with open('expired_domains.txt', 'w') as filehandle:

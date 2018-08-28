@@ -71,6 +71,4 @@ if __name__ == '__main__':
     # Save the scraped domains to a file called "expired_domains.txt"
     with open('expired_domains.txt', 'w') as filehandle:
         filehandle.writelines("%s\n" % place for place in expired_domains)
-
-
-
+      

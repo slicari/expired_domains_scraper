@@ -7,8 +7,6 @@ from furl import furl
 url_page = 'http://www.expireddomains.net/backorder-expired-domains/'
 f = furl(url_page)
 query_counter = 0
-# Test variable for the query parameter of the URL
-bla = 25
 expired_domains = []
 
 
@@ -69,7 +67,7 @@ def domain_scraper(qc, ds):
 
 
 if __name__ == '__main__':
-    domain_scraper(query_counter, bla)
+    domain_scraper(query_counter, all_the_doms)
     # Save the scraped domains to a file called "expired_domains.txt"
     with open('expired_domains.txt', 'w') as filehandle:
         filehandle.writelines("%s\n" % place for place in expired_domains)

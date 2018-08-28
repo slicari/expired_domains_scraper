@@ -1,20 +1,19 @@
 # Import libraries
 import urllib
-import logging
 from bs4 import BeautifulSoup
 from furl import furl
 
-# define some variables
+# Define some variables
 url_page = 'http://www.expireddomains.net/backorder-expired-domains/'
 f = furl(url_page)
 query_counter = 0
-# test variable for the query parameter of the URL
-bla = 50
+# Test variable for the query parameter of the URL
+bla = 25
 expired_domains = []
 
-# Iterate through the tbody table, looking for the "field_domain" value
-# to grab the 'title' aka expired domain
 
+# Iterate through the tbody table, looking for the "field_domain" value
+# Grab the 'title' value aka the expired domain
 
 def expired_domain_parser(fu):
     # Query the site and return the sites html
@@ -32,8 +31,8 @@ def expired_domain_parser(fu):
                 e.extract()
         expired_domains.append(domain)
 
-# Grabs the total number of expired domains for the current day
 
+# Grabs the total number of expired domains for the current day
 
 def total_domain_count(fu):
     page = urllib.urlopen(fu.url)
@@ -42,17 +41,19 @@ def total_domain_count(fu):
     dv = dv.find('strong').text
     return dv.rstrip('\n\r')
 
+
 # Parse the value from total_domain_count
-# and divide by 25 to give us the number of pages to scrape
+# Divide by 25 to give us the number of pages to scrape (25 domains per page)
+
 domain_size = total_domain_count(f)
 dms = domain_size.replace(",", "")
 final_num = (int(dms))
 all_the_doms = (int(final_num/25))
 
+
 # This function affixes the proper 'query' parameter to the url
 # Passes this url to expired_domain_parser
 # Repeats until 'domain_size' has been met
-
 
 def domain_scraper(qc, ds):
     if not expired_domains:
@@ -69,7 +70,6 @@ def domain_scraper(qc, ds):
 
 if __name__ == '__main__':
     domain_scraper(query_counter, bla)
-
     # Save the scraped domains to a file called "expired_domains.txt"
     with open('expired_domains.txt', 'w') as filehandle:
         filehandle.writelines("%s\n" % place for place in expired_domains)
